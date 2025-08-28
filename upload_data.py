@@ -1,18 +1,19 @@
-# upload_data_simple.py
 import os, json, argparse, time
 from typing import List, Dict, Any
 from dotenv import load_dotenv
 from openai import OpenAI
 from pinecone import Pinecone, ServerlessSpec
 
-# ====== cấu hình ngắn gọn (đổi tại CLI nếu cần) ======
-INDEX_NAME   = "nutritiondb"
-EMBED_MODEL  = "text-embedding-3-small"   # 1536 dims
-INDEX_DIM    = 1536
-NAMESPACE    = "default"
-CLOUD        = "aws"
-REGION       = "us-east-1"
-BATCH_SIZE   = 50
+load_dotenv()
+
+INDEX_NAME  = os.getenv("INDEX_NAME", "nutritiondb")
+EMBED_MODEL = os.getenv("OPENAI_EMBED_MODEL", "text-embedding-3-small")  # 1536 dims
+INDEX_DIM   = int(os.getenv("INDEX_DIM", "1536"))
+NAMESPACE   = os.getenv("NAMESPACE", "default")
+PINECONE_CLOUD = os.getenv("PINECONE_CLOUD", "aws")
+PINECONE_ENV   = os.getenv("PINECONE_ENVIRONMENT", "us-east-1")
+BATCH_SIZE = int(os.getenv("BATCH_SIZE", "50"))
+
 
 def chunk_text(text: str, size: int = 1000, overlap: int = 100) -> List[str]:
     text = (text or "").strip()
